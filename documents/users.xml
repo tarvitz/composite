@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DocumentElement>
+    <profile first_name="Alexander" last_name="Pepyako" age="23"
+             gender="male"
+             phone="+79110010203" email="com@alexander.pepyako">
+        <id>1</id>
+        <sign>Pepyako inc.</sign>
+    </profile>
+    <profile first_name="Nick" last_name="Fox" age="28"
+             gender="male"
+             phone="+79219720000" email="nfox@blacklibrary.ru">
+        <id>2</id>
+        <sign>In beat we blast.</sign>
+    </profile>
+</DocumentElement>

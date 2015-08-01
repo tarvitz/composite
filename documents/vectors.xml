@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DocumentElement>
+    <vector>
+        <x type="float">1.2</x>
+        <y type="float">3.2</y>
+    </vector>
+    <vector>
+        <x type="float">3.14</x>
+        <y type="float">2.71</y>
+    </vector>
+    <vector>
+        <x type="float">5.2</x>
+        <y type="float">4.9</y>
+    </vector>
+</DocumentElement>

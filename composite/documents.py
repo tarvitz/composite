@@ -81,7 +81,7 @@ class Document(six.with_metaclass(DocumentMeta)):
             )
 
     @classmethod
-    def get_parse_visitor(cls, fmt='dict'):
+    def get_parse_visitor_class(cls, fmt='dict'):
         if fmt == 'dict':
             return DictParseVisitor
         elif fmt == 'xml':
@@ -90,7 +90,7 @@ class Document(six.with_metaclass(DocumentMeta)):
             raise NotImplemented
 
     @classmethod
-    def get_build_visitor(cls, fmt):
+    def get_build_visitor_class(cls, fmt):
         if fmt == 'dict':
             return DictBuildVisitor
         elif fmt == 'xml':
@@ -104,7 +104,7 @@ class Document(six.with_metaclass(DocumentMeta)):
         _fields = cls._fields
 
         new_obj = cls()
-        visitor_class = cls.get_parse_visitor(fmt)
+        visitor_class = cls.get_parse_visitor_class(fmt)
         visitor = visitor_class(new_obj)
 
         for field_name, node in cls.iterate(source):
@@ -128,7 +128,7 @@ class Document(six.with_metaclass(DocumentMeta)):
 
     def to(self, fmt='dict', node_name=''):
         new_obj = self.init_new_obj_for_format(fmt, node_name)
-        visitor_class = self.get_build_visitor(fmt)
+        visitor_class = self.get_build_visitor_class(fmt)
         visitor = visitor_class(new_obj)
         for field_name, field in self._fields.items():
             field.visit(visitor, getattr(self, field_name))

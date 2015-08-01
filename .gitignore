@@ -1,3 +1,6 @@
 *.py[co]
 .idea
 *.egg-info
+/ve[3]
+.tox
+.coverage

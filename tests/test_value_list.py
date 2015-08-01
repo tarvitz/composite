@@ -1,11 +1,14 @@
 from lxml import etree
 from unittest import TestCase
-from documents import ValueList
+from contextlib import closing
+
+from .documents import ValueList
 
 
 class TestVector(TestCase):
     def setUp(self):
-        self.xml_file = open('documents/value_list.xml', 'r').read()
+        with closing(open('documents/value_list.xml', 'r')) as doc:
+            self.xml_file = doc.read().encode('utf-8')
 
     def test_from_xml(self):
         """

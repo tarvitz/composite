@@ -27,10 +27,10 @@ class DocumentMeta(type):
         new_class = super(DocumentMeta, cls).__new__(cls, name, bases, attrs)
         if attribute_class:
             attribute_composite_class = type(
-                b'Attribute', (DocumentAttribute, ),
-                attribute_class.__dict__
+                str('Attribute'), (DocumentAttribute, ),
+                dict(attribute_class.__dict__)
             )
-            setattr(new_class, b'Attribute', attribute_composite_class)
+            setattr(new_class, str('Attribute'), attribute_composite_class)
         return new_class
 
 
@@ -261,7 +261,7 @@ class XMLBuildVisitor(FieldVisitor):
         :return: None
         """
         for value in source:
-            element = node.type.to(value,  node.name, 'xml')
+            element = node.type.to(value, node.name, 'xml')
             if value.has_attributes():
                 attrs = value.get_attributes()
                 attrib = attrs.to('attrib', 'xml')

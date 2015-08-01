@@ -1,11 +1,14 @@
 from lxml import etree
 from unittest import TestCase
-from documents import Users
+from contextlib import closing
+
+from .documents import Users
 
 
 class TestUsers(TestCase):
     def setUp(self):
-        self.xml_file = open('documents/users.xml', 'r').read()
+        with closing(open('documents/users.xml', 'r')) as doc:
+            self.xml_file = doc.read().encode('utf-8')
 
     def assert_user(self, user):
         """

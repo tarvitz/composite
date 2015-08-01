@@ -1,11 +1,14 @@
 from lxml import etree
 from unittest import TestCase
-from documents import Vectors
+from contextlib import closing
+
+from .documents import Vectors
 
 
 class TestVectors(TestCase):
     def setUp(self):
-        self.xml_file = open('documents/vectors.xml', 'r').read()
+        with closing(open('documents/vectors.xml', 'r')) as doc:
+            self.xml_file = doc.read().encode('utf-8')
 
     def assert_vector(self, vector):
         """

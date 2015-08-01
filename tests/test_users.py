@@ -2,13 +2,18 @@ from lxml import etree
 from unittest import TestCase
 from contextlib import closing
 
-from .documents import Users
+from tests.documents import Users
 
 
 class TestUsers(TestCase):
+    maxDiff = None
+
     def setUp(self):
         with closing(open('documents/users.xml', 'r')) as doc:
             self.xml_file = doc.read().encode('utf-8')
+
+        with closing(open('documents/users.json', 'r')) as doc:
+            self.json_raw = str(doc.read())
 
     def assert_user(self, user):
         """
@@ -52,3 +57,29 @@ class TestUsers(TestCase):
         self.assertEqual(len(source), 2)
         user = source[0]
         self.assert_user(user)
+
+    def test_from_json(self):
+        users = Users.from_json(self.json_raw)
+        self.assertEqual(len(users), 2)
+        user = users[0]
+        self.assert_user(user)
+
+    def test_to_json(self):
+        users = Users.from_json(self.json_raw)
+        self.assertEqual(len(users), 2)
+        source = users.to_dict()
+        user = source['profile'][0]
+        self.assertEqual(
+            user, {
+                '_attributes': {
+                    "gender": "male",
+                    "first_name": "Alexander",
+                    "last_name": "Pepyako",
+                    "age": 23,
+                    "phone": "+79110010203",
+                    "email": "com@alexander.pepyako"
+                },
+                'id': 1,
+                'sign': "Pepyako inc."
+            }
+        )

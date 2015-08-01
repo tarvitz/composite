@@ -2,7 +2,7 @@ from lxml import etree
 from unittest import TestCase
 
 from contextlib import closing
-from .documents import Vector
+from tests.documents import Vector
 
 
 class TestVector(TestCase):

@@ -1,0 +1,28 @@
+{
+  "profile": [
+    {
+      "_attributes": {
+        "first_name": "Alexander",
+        "last_name": "Pepyako",
+        "age": 23,
+        "phone": "+79110010203",
+        "email": "com@alexander.pepyako",
+        "gender": "male"
+      },
+      "id": 1,
+      "sign": "Pepyako inc."
+    },
+    {
+      "_attributes": {
+        "first_name": "Nick",
+        "last_name": "Fox",
+        "age": 28,
+        "phone": "+79219720000",
+        "email": "nfox@blacklibrary.ru",
+        "gender": "male"
+      },
+      "id": 2,
+      "sign": "In beat we blast."
+    }
+  ]
+}

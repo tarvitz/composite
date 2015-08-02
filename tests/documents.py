@@ -1,12 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from composite import Document
-from composite.fields import Field, AttributeField, ListNode, ListField
+from composite.fields import Field, AttributeField, ListNode, ListField, Node
 
 
 class User(Document):
     id = Field(name='id', type=int)
     sign = Field(name='sign', type=str)
+
+    def get_user_name(self):
+        if self.get_attributes():
+            return '%s %s' % (self.attributes.first_name,
+                              self.attributes.last_name)
+        return self.id
 
     def __str__(self):
         return '%s' % self.attributes.first_name
@@ -79,3 +85,21 @@ class ValueList(Document):
     @property
     def total(self):
         return sum(self.values)
+
+
+class Company(Document):
+    """
+    Company document
+
+    :param str name: title
+    :param str address: address
+    :param str company_type: company type
+    :param User ceo: company CEO user profile
+    """
+    title = Field('title', str)
+    address = Field('address', str)
+    company_type = Field('company_type', str)
+    ceo = Node('ceo', type=User)
+
+    def __str__(self):
+        return self.ceo.get_user_name()

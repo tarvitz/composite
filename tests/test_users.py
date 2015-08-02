@@ -1,3 +1,5 @@
+import six
+import json
 from lxml import etree
 from unittest import TestCase
 from contextlib import closing
@@ -27,7 +29,7 @@ class TestUsers(TestCase):
         self.assertEqual(user.id, 1)
         self.assertEqual(user.sign, "Pepyako inc.")
         self.assertIn('_attributes', user.__dict__)
-        attributes = user._attributes
+        attributes = user.attributes
         self.assertIsInstance(attributes, user.Attribute)
         self.assertEqual(attributes.first_name, "Alexander")
         self.assertEqual(attributes.last_name, "Pepyako")
@@ -67,8 +69,14 @@ class TestUsers(TestCase):
     def test_to_json(self):
         users = Users.from_json(self.json_raw)
         self.assertEqual(len(users), 2)
-        source = users.to_dict()
-        user = source['profile'][0]
+
+        json_raw = users.to_json()
+        self.assertIsInstance(json_raw, six.string_types)
+        from_json = json.loads(json_raw)
+        self.assertIn('profile', from_json)
+        self.assertEqual(len(from_json['profile']), 2)
+        user = from_json['profile'][0]
+
         self.assertEqual(
             user, {
                 '_attributes': {

@@ -1,0 +1,17 @@
+{
+  "ceo": {
+    "_attributes": {
+      "first_name": "Alexander",
+      "last_name": "Pepyako",
+      "age": 23,
+      "gender": "male",
+      "phone": "+79110010203",
+      "email": "com@alexander.pepyako"
+    },
+    "id": 1,
+    "sign": "Pepyako inc."
+  },
+  "title": "Pepyako industries",
+  "address": "Third Vydrokushskaya street, 7 building",
+  "company_type": "GHMb"
+}

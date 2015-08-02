@@ -23,17 +23,11 @@ class TestVector(TestCase):
         self.assertEqual(vector.y, 3.2)
 
     def test_from_xml(self):
-        """
-        parse documents/users.xml
-        """
         node = etree.XML(self.xml_file)
         vector = Vector.build(node, 'xml')
         self.assert_vector(vector)
 
     def test_to_xml(self):
-        """
-        un-parse user object (with documents/users.xml binding)
-        """
         source_node = etree.XML(self.xml_file)
         vector = Vector.build(source_node, 'xml')
         xml_node = vector.to_xml()

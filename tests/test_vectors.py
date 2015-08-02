@@ -23,9 +23,6 @@ class TestVectors(TestCase):
         self.assertEqual(vector.y, 3.2)
 
     def test_from_xml(self):
-        """
-        parse documents/users.xml
-        """
         node = etree.XML(self.xml_file)
         vectors = Vectors.build(node, 'xml')
         self.assertEqual(len(vectors), 3)
@@ -33,9 +30,6 @@ class TestVectors(TestCase):
         self.assert_vector(vector)
 
     def test_to_xml(self):
-        """
-        un-parse user object (with documents/users.xml binding)
-        """
         source_node = etree.XML(self.xml_file)
         source = Vectors.build(source_node, 'xml')
         xml_node = source.to_xml()

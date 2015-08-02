@@ -1,0 +1,17 @@
+[run]
+branch = True
+omit = 
+    /tests/*.py
+
+[report]
+exclude_lines =
+  pragma: no cover
+  def __repr__
+  self.fail\(
+  raise AssertionError
+  raise NotImplementedError
+  raise NotImplemented
+  if __name__ == .__main__.:
+
+[html]
+directory = reports/coverage

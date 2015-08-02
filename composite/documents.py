@@ -1,7 +1,7 @@
 from __future__ import unicode_literals
 
 import six
-import lxml
+from lxml import etree
 try:
     import simplejson as json
 except ImportError:
@@ -48,7 +48,7 @@ class Document(six.with_metaclass(DocumentMeta)):
             else:
                 setattr(self, name, item.type())
 
-    def __str__(self):
+    def __str__(self):  #: pragma: no cover
         return '0x%08x' % id(self)
 
     def __repr__(self):
@@ -65,12 +65,9 @@ class Document(six.with_metaclass(DocumentMeta)):
 
     @staticmethod
     def iterate(source):
-        if isinstance(source, lxml.etree._Element):
+        if isinstance(source, etree._Element):
             for node in source.getchildren():
                 yield (node.tag, node)
-        elif isinstance(source, lxml.etree._Attrib):
-            for name, item in source.iteritems():
-                yield (name, item)
         elif isinstance(source, dict):
             for name, item in six.iteritems(source):
                 yield (name, item)
@@ -99,6 +96,15 @@ class Document(six.with_metaclass(DocumentMeta)):
             raise NotImplemented
 
     @classmethod
+    def get_source_attributes(cls, source):
+        if isinstance(source, dict):
+            return source.get('_attributes', {})
+        elif isinstance(source, etree._Element):
+            return dict(source.attrib)
+        else:
+            raise NotImplemented
+
+    @classmethod
     def build(cls, source, fmt='dict'):
         _fields_mapping = cls._fields_mapping
         _fields = cls._fields
@@ -106,6 +112,13 @@ class Document(six.with_metaclass(DocumentMeta)):
         new_obj = cls()
         visitor_class = cls.get_parse_visitor_class(fmt)
         visitor = visitor_class(new_obj)
+
+        #: build attributes first
+        attrs_source = cls.get_source_attributes(source)
+        attribute_class = cls.get_attribute_class()
+        if attrs_source and attribute_class:
+            new_attrs = attribute_class.build(attrs_source, fmt)
+            setattr(new_obj, '_attributes', new_attrs)
 
         for field_name, node in cls.iterate(source):
             if field_name not in _fields_mapping:
@@ -118,13 +131,35 @@ class Document(six.with_metaclass(DocumentMeta)):
     def init_new_obj_for_format(self, fmt='dict', node_name='DocumentRoot'):
         new_obj = {}
         if fmt == 'xml':
-            if isinstance(self, DocumentAttribute):
-                new_obj = lxml.etree._Attrib(lxml.etree.Element(node_name))
-            else:
-                new_obj = lxml.etree.Element(node_name)
-        elif fmt == 'dict':
-            new_obj = {}
+            new_obj = etree.Element(node_name)
         return new_obj
+
+    @staticmethod
+    def bind_blank_attributes(new_obj):
+        """
+        there's two several way attributes initialization:
+
+        - build it in schema permanently but blank if they (attributes)
+            didn't define,
+            would not be nice as end document would have unnecessary blank
+            field
+        - build it within build visitor but every visit run should perform
+            safe check if attribute field exists inside its object.
+            Some document classes have already attribute field which could be
+            visit safely without any checks, some have not. Lots of checks
+            would be cpu time wasting.
+        - build attributes before visit operations would perform.
+            This way garantee that visitor would run safely without any checks,
+            but you should maintain this each new format (that demands it)
+            you want to add. For example lxml XML document already has attrib
+            field inside new Element, so there's no need to make blank
+            attribute instance here.
+
+        :return: None
+        :rtype: None
+        """
+        if isinstance(new_obj, dict):
+            new_obj['_attributes'] = {}
 
     def to(self, fmt='dict', node_name=''):
         new_obj = self.init_new_obj_for_format(fmt, node_name)
@@ -132,6 +167,11 @@ class Document(six.with_metaclass(DocumentMeta)):
         visitor = visitor_class(new_obj)
         for field_name, field in self._fields.items():
             field.visit(visitor, getattr(self, field_name))
+
+        if self.has_attributes():
+            self.bind_blank_attributes(new_obj)
+            for field_name, field in self.attributes._fields.items():
+                field.visit(visitor, getattr(self.attributes, field_name))
         return new_obj
 
     @classmethod

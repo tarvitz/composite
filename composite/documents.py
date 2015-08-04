@@ -7,7 +7,8 @@ try:
 except ImportError:
     import json
 
-from .fields import MetaField, MetaListField
+from .exceptions import ImproperlyConfigured
+from .fields import MetaField, MetaListField, AttributeField
 from .visitors import (
     DictParseVisitor, DictBuildVisitor, XMLBuildVisitor, XMLParseVisitor
 )
@@ -35,6 +36,27 @@ class DocumentMeta(type):
             )
             setattr(new_class, str('Attribute'), attribute_composite_class)
         return new_class
+
+    def __init__(cls, name, bases, attrs):
+        #: reserved for attributes only
+        if cls.__name__ == 'Attribute':
+            _errors = []
+            for field_name, field in attrs.items():
+                if (isinstance(field, MetaField)
+                        and not isinstance(field, AttributeField)):
+                    _errors.append({
+                        'msg': (
+                            "Field `%s` has type `%r`" % (field_name,
+                                                          type(field))
+                        )
+                    })
+            if _errors:
+                raise ImproperlyConfigured(
+                    "Attribute class should be configured with "
+                    "`AttributeField` only", _errors
+                )
+
+        super(DocumentMeta, cls).__init__(name, bases, attrs)
 
 
 class Document(six.with_metaclass(DocumentMeta)):

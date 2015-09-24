@@ -150,6 +150,20 @@ class Document(six.with_metaclass(DocumentMeta)):
             field.visit(visitor, node)
         return new_obj
 
+    @classmethod
+    def parse(cls, builder_class, source):
+        """
+        build instance withing build_class and source
+
+        :param builder_class:
+        :param source:
+        :rtype: Document
+        :return: document instance
+        """
+        new_obj = cls()
+        builder = builder_class(new_obj)
+        return builder.parse(source)
+
     def init_new_obj_for_format(self, fmt='dict', node_name='DocumentRoot'):
         new_obj = {}
         if fmt == 'xml':

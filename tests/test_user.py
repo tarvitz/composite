@@ -4,6 +4,8 @@ from contextlib import closing
 
 from tests.documents import User
 
+from composite.builders import XMLDocumentBuilder
+
 
 class TestUser(TestCase):
     maxDiff = None
@@ -36,6 +38,11 @@ class TestUser(TestCase):
     def test_from_xml(self):
         node = etree.XML(self.xml_file)
         user = User.build(node, 'xml')
+        self.assert_user(user)
+
+    def test_build_from_xml(self):
+        node = etree.fromstring(self.xml_file)
+        user = User.parse(XMLDocumentBuilder, node)
         self.assert_user(user)
 
     def test_to_xml(self):

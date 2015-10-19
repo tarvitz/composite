@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-import warnings
 import six
 from lxml import etree
 try:
@@ -43,8 +42,8 @@ class DocumentMeta(type):
         if cls.__name__ == 'Attribute':
             _errors = []
             for field_name, field in attrs.items():
-                if (isinstance(field, MetaField) and not
-                        isinstance(field, AttributeField)):
+                if (isinstance(field, MetaField)
+                        and not isinstance(field, AttributeField)):
                     _errors.append({
                         'msg': (
                             "Field `%s` has type `%r`" % (field_name,
@@ -174,7 +173,7 @@ class Document(six.with_metaclass(DocumentMeta)):
     @staticmethod
     def bind_blank_attributes(new_obj):
         """
-        there're two several ways for attributes initialization:
+        there's two several way attributes initialization:
 
         - build it in schema permanently but blank if they (attributes)
             didn't define,
@@ -199,7 +198,6 @@ class Document(six.with_metaclass(DocumentMeta)):
             new_obj['_attributes'] = {}
 
     def to(self, fmt='dict', node_name=''):
-        warnings.warn('deprecated')
         new_obj = self.init_new_obj_for_format(fmt, node_name)
         visitor_class = self.get_build_visitor_class(fmt)
         visitor = visitor_class(new_obj)

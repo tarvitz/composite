@@ -1,10 +1,11 @@
-import six
 import json
 from lxml import etree
 from unittest import TestCase
 from contextlib import closing
 
 from tests.documents import Users
+
+from composite.builders import LXMLDocumentBuilder, PythonDocumentBuilder
 
 
 class TestUsers(TestCase):
@@ -43,7 +44,7 @@ class TestUsers(TestCase):
         parse documents/users.xml
         """
         node = etree.XML(self.xml_file)
-        users = Users.build(node, 'xml')
+        users = Users.parse(LXMLDocumentBuilder, node)
         self.assertEqual(len(users), 2)
         user = users[0]
         self.assert_user(user)
@@ -53,29 +54,28 @@ class TestUsers(TestCase):
         un-parse user object (with documents/users.xml binding)
         """
         source_node = etree.XML(self.xml_file)
-        users = Users.build(source_node, 'xml')
-        xml_node = users.to_xml()
-        source = Users.from_xml(xml_node)
+        users = Users.parse(LXMLDocumentBuilder, source_node)
+        xml_node = Users.build(LXMLDocumentBuilder, users)
+        source = Users.parse(LXMLDocumentBuilder, xml_node)
         self.assertEqual(len(source), 2)
         user = source[0]
         self.assert_user(user)
 
     def test_from_json(self):
-        users = Users.from_json(self.json_raw)
+        users = Users.parse(PythonDocumentBuilder, json.loads(self.json_raw))
         self.assertEqual(len(users), 2)
         user = users[0]
         self.assert_user(user)
 
     def test_to_json(self):
-        users = Users.from_json(self.json_raw)
+        users = Users.parse(PythonDocumentBuilder, json.loads(self.json_raw))
         self.assertEqual(len(users), 2)
 
-        json_raw = users.to_json()
-        self.assertIsInstance(json_raw, six.string_types)
-        from_json = json.loads(json_raw)
-        self.assertIn('profile', from_json)
-        self.assertEqual(len(from_json['profile']), 2)
-        user = from_json['profile'][0]
+        raw_object = Users.build(PythonDocumentBuilder, users)
+        self.assertIsInstance(raw_object, dict)
+        self.assertIn('profile', raw_object)
+        self.assertEqual(len(raw_object['profile']), 2)
+        user = raw_object['profile'][0]
 
         self.assertEqual(
             user, {

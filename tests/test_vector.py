@@ -4,7 +4,7 @@ from unittest import TestCase
 from contextlib import closing
 from tests.documents import Vector
 
-from composite.builders import XMLDocumentBuilder
+from composite.builders import LXMLDocumentBuilder
 
 
 class TestVector(TestCase):
@@ -26,17 +26,17 @@ class TestVector(TestCase):
 
     def test_from_xml(self):
         node = etree.XML(self.xml_file)
-        vector = Vector.build(node, 'xml')
+        vector = Vector.parse(LXMLDocumentBuilder, node)
         self.assert_vector(vector)
 
     def test_build_from_xml(self):
         node = etree.fromstring(self.xml_file)
-        vector = Vector.parse(XMLDocumentBuilder, node)
+        vector = Vector.parse(LXMLDocumentBuilder, node)
         self.assert_vector(vector)
 
     def test_to_xml(self):
         source_node = etree.XML(self.xml_file)
-        vector = Vector.build(source_node, 'xml')
-        xml_node = vector.to_xml()
-        source = Vector.from_xml(xml_node)
+        vector = Vector.parse(LXMLDocumentBuilder, source_node)
+        xml_node = Vector.build(LXMLDocumentBuilder, vector)
+        source = Vector.parse(LXMLDocumentBuilder, xml_node)
         self.assert_vector(source)

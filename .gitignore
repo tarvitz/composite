@@ -2,6 +2,6 @@
 .idea
 *.egg-info
 /ve[3]
-.tox
-.coverage
+/.tox
 /reports
+/.coverage

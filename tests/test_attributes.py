@@ -1,6 +1,7 @@
 from unittest import TestCase
 
 from tests.documents import User
+from composite.builders import PythonDocumentBuilder
 
 
 class TestAttributes(TestCase):
@@ -18,7 +19,8 @@ class TestAttributes(TestCase):
         }
 
     def test_attributes(self):
-        user = User.from_dict(self.source)
+        user = User.parse(PythonDocumentBuilder, self.source)
+
         self.assertTrue(user.has_attributes())
         attrs = user.get_attributes()
         self.assertEqual(len(attrs.values()), 6)

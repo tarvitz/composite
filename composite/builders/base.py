@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+"""
+.. module:: composite.builders.base
+    :synopsis: Base builder class
+    :platform: Linux, Unix, Windows
+.. moduleauthor:: Nickolas Fox <tarvitz@blacklibary.ru>
+.. sectionauthor:: Nickolas Fox <tarvitz@blacklibary.ru>
+"""
 
 
 class BaseDocumentBuilder(object):
@@ -19,22 +26,63 @@ class BaseDocumentBuilder(object):
         self.document = document
 
     def get_parse_visitor_class(self):
+        """
+        get parse visitor class
+
+        :rtype: class
+        :return: visitor class
+        """
         return self.parse_visitor_class
 
     def get_parse_visitor(self):
-        return self.get_parse_visitor_class()(self.document)
+        parser_class = self.__class__
+        return self.get_parse_visitor_class()(parser_class, self.document)
 
     def get_build_visitor_class(self):
+        """
+
+        :rtype: callable
+        :return: callable object
+        """
         return self.build_visitor_class
 
-    def get_build_visitor(self):
-        return self.get_build_visitor_class()(self.document)
+    def get_build_visitor(self, document):
+        builder_class = self.__class__
+        return self.get_build_visitor_class()(builder_class, document)
 
     def get_document_fields(self):
         return self.document._fields
 
     def get_document_fields_mapping(self):
         return self.document._fields_mapping
+
+    def get_attribute_fields(self):
+        return self.document.attributes._fields
+
+    def get_source_object(self, node_name):
+        """
+        get source object
+
+        :param str node_name: node name
+        :return: source object
+        """
+        raise NotImplemented
+
+    def get_attribute_class(self):
+        return getattr(self.document, 'Attribute', None)
+
+    def get_attributes_source(self, source):
+        raise NotImplemented
+
+    def init_blank_attributes(self, source_object):
+        """
+        initiate blank attributes
+
+        :param source_object: source object
+        :raises NotImplemented:
+            - should be implement in children classes
+        """
+        raise NotImplemented
 
     @classmethod
     def iterate(cls, source):
@@ -46,12 +94,6 @@ class BaseDocumentBuilder(object):
         :return: generator with tuple[node name, node content]
         """
         raise NotImplemented
-
-    def get_attribute_class(self):
-        return getattr(self.document, 'Attribute', None)
-
-    def get_attributes_source(self, source):
-        return {}
 
     def parse(self, source):
         """
@@ -80,3 +122,25 @@ class BaseDocumentBuilder(object):
             field = fields[name]
             field.visit(visitor, node)
         return self.document
+
+    def build(self, node_name='document'):
+        """
+        build xml instance from python object (document)
+
+        :rtype: lxml.etree._Element
+        :return: xml document
+        """
+        document = self.document
+        source_object = self.get_source_object(node_name)
+
+        visitor = self.get_build_visitor(source_object)
+        fields = self.get_document_fields()
+        for field_name, field in fields.items():
+            field.visit(visitor, getattr(document, field_name))
+
+        if document.has_attributes():
+            attribute_fields = self.get_attribute_fields()
+            self.init_blank_attributes(source_object)
+            for field_name, field in attribute_fields.items():
+                field.visit(visitor, getattr(document.attributes, field_name))
+        return source_object

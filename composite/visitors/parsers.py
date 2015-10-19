@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 """
 .. module:: composite.visitors.parsers
-    :synopsis: Parsers
+    :synopsis: Builtin parsers
+        - dict (python dict)
+        - lxml (libxml bindings)
     :platform: Linux, Unix, Windows
 .. moduleauthor:: Nickolas Fox <tarvitz@blacklibary.ru>
 .. sectionauthor:: Nickolas Fox <tarvitz@blacklibary.ru>
@@ -10,96 +12,62 @@ from .base import FieldVisitor
 
 
 class DictParseVisitor(FieldVisitor):
-    """
-    """
-    def visit_field(self, field, source):
-        name = self.composite.field_map[field.name]
-        setattr(self.composite, name, field.type(source))
+    def visit_attribute_field(self, field, raw_node):
+        document = self.composite
+        name = document.field_map[field.name]
+        setattr(document, name, field.type(raw_node))
 
-    def visit_list_field(self, field, source):
+    def visit_field(self, field, raw_node):
+        name = self.composite.field_map[field.name]
+        setattr(self.composite, name, field.type(raw_node))
+
+    def visit_list_field(self, field, raw_node):
         name = self.composite.field_map[field.name]
         typ = field.type
-        component_list = [typ(x) for x in source]
+        component_list = [typ(x) for x in raw_node]
         setattr(self.composite, name, component_list)
 
-    def visit_node(self, node, source):
-        obj = self.composite
-        name = obj.field_map[node.name]
-        element = node.type.build(source)
-        setattr(obj, name, element)
+    def visit_node(self, node, raw_node):
+        document = self.composite
+        name = document.field_map[node.name]
+        element = node.type.parse(self.builder_class, raw_node)
+        setattr(document, name, element)
 
-    def visit_list_node(self, node, source):
-        obj = self.composite
-        name = obj.field_map[node.name]
-        append_field = getattr(obj, name)
-
-        for value in source:
-            element = node.type.build(value)
+    def visit_list_node(self, node, raw_node):
+        document = self.composite
+        name = document.field_map[node.name]
+        append_field = getattr(document, name)
+        builder_class = self.builder_class
+        for value in raw_node:
+            element = node.type.parse(builder_class, value)
             append_field.append(element)
 
-    def visit_attribute_field(self, field, source):
-        obj = self.composite
-        name = obj.field_map[field.name]
-        setattr(obj, name, field.type(source))
 
+class LXMLParseVisitor(FieldVisitor):
+    def visit_attribute_field(self, field, raw_node):
+        document = self.composite
+        name = document.field_map[field.name]
+        setattr(self.composite, name, field.type(raw_node))
 
-class XMLParseVisitor(FieldVisitor):
-    """
-    XML builder
-    """
-    def visit_field(self, field, source):
-        """
+    def visit_field(self, field, raw_node):
+        document = self.composite
+        name = document.field_map[field.name]
+        setattr(self.composite, name, field.type(raw_node.text))
 
-        :param field:
-        :param source:
-        :return:
-        """
-        obj = self.composite
-        name = obj.field_map[field.name]
-        setattr(self.composite, name, field.type(source.text))
-
-    def visit_list_field(self, field, source):
-        """
-
-        :param field:
-        :param source:
-        :return:
-        """
-        obj = self.composite
-        name = obj.field_map[field.name]
+    def visit_list_field(self, field, raw_node):
+        document = self.composite
+        name = document.field_map[field.name]
         typ = field.type
-        getattr(obj, name).append(typ(source.text))
+        getattr(document, name).append(typ(raw_node.text))
 
-    def visit_attribute_field(self, field, source):
-        """
+    def visit_node(self, node, raw_node):
+        document = self.composite
+        name = document.field_map[node.name]
+        element = node.type.parse(self.builder_class, raw_node)
+        setattr(self.composite, name, element)
 
-        :param field:
-        :param source:
-        :return:
-        """
-        obj = self.composite
-        name = obj.field_map[field.name]
-        setattr(self.composite, name, field.type(source))
-
-    def visit_node(self, node, source):
-        """
-
-        :param node:
-        :param source:
-        :return:
-        """
-        obj = self.composite
-        name = obj.field_map[node.name]
-        setattr(self.composite, name, node.type.build(source, 'xml'))
-
-    def visit_list_node(self, node, source):
-        """
-
-        :param node:
-        :param source:
-        :return:
-        """
-        obj = self.composite
-        name = obj.field_map[node.name]
-        element = node.type.build(source, 'xml')
+    def visit_list_node(self, node, raw_node):
+        document = self.composite
+        name = document.field_map[node.name]
+        element = node.type.parse(self.builder_class, raw_node)
         getattr(self.composite, name).append(element)

@@ -91,7 +91,7 @@ class Company(Document):
     """
     Company document
 
-    :param str name: title
+    :param str title: title
     :param str address: address
     :param str company_type: company type
     :param User ceo: company CEO user profile

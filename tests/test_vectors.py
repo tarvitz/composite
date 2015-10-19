@@ -3,6 +3,7 @@ from unittest import TestCase
 from contextlib import closing
 
 from tests.documents import Vectors
+from composite.builders.xml import LXMLDocumentBuilder
 
 
 class TestVectors(TestCase):
@@ -24,16 +25,18 @@ class TestVectors(TestCase):
 
     def test_from_xml(self):
         node = etree.XML(self.xml_file)
-        vectors = Vectors.build(node, 'xml')
+        vectors = Vectors.parse(LXMLDocumentBuilder, node)
         self.assertEqual(len(vectors), 3)
         vector = vectors[0]
         self.assert_vector(vector)
 
     def test_to_xml(self):
         source_node = etree.XML(self.xml_file)
-        source = Vectors.build(source_node, 'xml')
-        xml_node = source.to_xml()
-        vectors = Vectors.from_xml(xml_node)
+
+        vectors = Vectors.parse(LXMLDocumentBuilder, source_node)
+        xml_node = Vectors.build(LXMLDocumentBuilder, vectors)
+        self.assertIsNotNone(xml_node)
+        vectors = Vectors.parse(LXMLDocumentBuilder, xml_node)
         self.assertEqual(len(vectors), 3)
         vector = vectors[0]
         self.assert_vector(vector)

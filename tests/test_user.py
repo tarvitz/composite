@@ -4,7 +4,7 @@ from contextlib import closing
 
 from tests.documents import User
 
-from composite.builders import XMLDocumentBuilder
+from composite.builders import LXMLDocumentBuilder, PythonDocumentBuilder
 
 
 class TestUser(TestCase):
@@ -37,26 +37,26 @@ class TestUser(TestCase):
 
     def test_from_xml(self):
         node = etree.XML(self.xml_file)
-        user = User.build(node, 'xml')
+        user = User.parse(LXMLDocumentBuilder, node)
         self.assert_user(user)
 
     def test_build_from_xml(self):
         node = etree.fromstring(self.xml_file)
-        user = User.parse(XMLDocumentBuilder, node)
+        user = User.parse(LXMLDocumentBuilder, node)
         self.assert_user(user)
 
     def test_to_xml(self):
         source_node = etree.XML(self.xml_file)
-        user = User.build(source_node, 'xml')
-        xml_node = user.to_xml()
-        source = User.from_xml(xml_node)
+        user = User.parse(LXMLDocumentBuilder, source_node)
+        xml_node = User.build(LXMLDocumentBuilder, user)
+        source = User.parse(LXMLDocumentBuilder, xml_node)
         self.assert_user(source)
 
     def test_to_dict(self):
         source_node = etree.XML(self.xml_file)
-        user = User.build(source_node, 'xml')
+        user = User.parse(LXMLDocumentBuilder, source_node)
         self.assertEqual(
-            user.to_dict(),
+            User.build(PythonDocumentBuilder, user),
             {
                 '_attributes': {
                     'first_name': 'Alexander',

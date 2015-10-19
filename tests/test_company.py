@@ -1,8 +1,12 @@
+import json
+
 from lxml import etree
 from unittest import TestCase
 from contextlib import closing
 
 from tests.documents import Company
+
+from composite.builders import LXMLDocumentBuilder, PythonDocumentBuilder
 
 
 class TestCompany(TestCase):
@@ -38,22 +42,25 @@ class TestCompany(TestCase):
 
     def test_from_xml(self):
         node = etree.XML(self.xml_file)
-        company = Company.build(node, 'xml')
+        company = Company.parse(LXMLDocumentBuilder, node)
         self.assert_user(company.ceo)
 
     def test_to_xml(self):
         source_node = etree.XML(self.xml_file)
-        company = Company.build(source_node, 'xml')
-        xml_node = company.to_xml()
-        source = Company.from_xml(xml_node)
+        company = Company.parse(LXMLDocumentBuilder, source_node)
+        xml_node = company.build(LXMLDocumentBuilder, company)
+        source = Company.parse(LXMLDocumentBuilder, xml_node)
         self.assert_user(source.ceo)
 
     def test_from_json(self):
-        company = Company.from_json(self.json_file)
+        company = Company.parse(PythonDocumentBuilder,
+                                json.loads(self.json_file))
         self.assert_user(company.ceo)
 
     def test_to_json(self):
-        company = Company.from_json(self.json_file)
-        raw_json = company.to_json()
-        source = Company.from_json(raw_json)
+        company = Company.parse(PythonDocumentBuilder,
+                                json.loads(self.json_file))
+        raw_dict = company.build(PythonDocumentBuilder, company)
+        raw_json = json.dumps(raw_dict)
+        source = Company.parse(PythonDocumentBuilder, json.loads(raw_json))
         self.assert_user(source.ceo)

@@ -1,4 +1,6 @@
 from .base import BaseDocumentBuilder
-from .xml import XMLDocumentBuilder
+from .xml import LXMLDocumentBuilder
+from .python import PythonDocumentBuilder
 
-__all__ = ['BaseDocumentBuilder', 'XMLDocumentBuilder', ]
+__all__ = ['BaseDocumentBuilder', 'LXMLDocumentBuilder',
+           'PythonDocumentBuilder']

@@ -7,8 +7,8 @@
 .. sectionauthor:: Nickolas Fox <tarvitz@blacklibary.ru>
 """
 from .base import FieldVisitor
-from .parsers import XMLParseVisitor, DictParseVisitor
-from .builders import XMLBuildVisitor, DictBuildVisitor
+from .parsers import LXMLParseVisitor, DictParseVisitor
+from .builders import LXMLBuildVisitor, DictBuildVisitor
 
-__all__ = ['XMLBuildVisitor', 'XMLParseVisitor', 'DictBuildVisitor',
+__all__ = ['LXMLBuildVisitor', 'LXMLParseVisitor', 'DictBuildVisitor',
            'DictParseVisitor', 'FieldVisitor']

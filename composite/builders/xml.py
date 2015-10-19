@@ -1,36 +1,41 @@
 # -*- coding: utf-8 -*-
+"""
+.. module:: composite.builers.xml
+    :synopsis: XML (lxml) builder
+    :platform: Linux, Unix, Windows
+.. moduleauthor:: Nickolas Fox <tarvitz@blacklibary.ru>
+.. sectionauthor:: Nickolas Fox <tarvitz@blacklibary.ru>
+"""
 from lxml import etree
 from .base import BaseDocumentBuilder
-from ..visitors import XMLBuildVisitor, XMLParseVisitor
+from ..visitors import LXMLBuildVisitor, LXMLParseVisitor
 
 
-class XMLAttributeBuilder(BaseDocumentBuilder):
+class LXMLDocumentBuilder(BaseDocumentBuilder):
     """
-    XML attributes builder
+    XML documents builder class for parse documents from raw format
+    (via lxml) and build to them directly.
     """
-    build_visitor_class = XMLBuildVisitor
-    parse_visitor_class = XMLParseVisitor
-
-    def parse(self, source):
-        assert isinstance(source, etree._Attrib)
-        return super(XMLAttributeBuilder, self).parse(source)
-
-    def iterate(cls, source):
-        for name, item in source.items():
-            yield (name, item)
-
-
-class XMLDocumentBuilder(BaseDocumentBuilder):
-    """
-
-    """
-    build_visitor_class = XMLBuildVisitor
-    parse_visitor_class = XMLParseVisitor
-
+    build_visitor_class = LXMLBuildVisitor
+    parse_visitor_class = LXMLParseVisitor
 
     def parse(self, source):
         assert isinstance(source, (etree._Element, etree._Attrib))
-        return super(XMLDocumentBuilder, self).parse(source)
+        return super(LXMLDocumentBuilder, self).parse(source)
+
+    def build(self, node_name='document'):
+        assert (not isinstance(self.document, (etree._Element, etree._Attrib)))
+        return super(LXMLDocumentBuilder, self).build(node_name)
+
+    def get_source_object(self, node_name):
+        """
+        returns blank lxml.etree.Element object
+
+        :param str node_name: document node name
+        :rtype: lxml.etree.Element
+        :return: lxml Element instance
+        """
+        return etree.Element(node_name)
 
     def get_attributes_source(self, source):
         """
@@ -42,21 +47,30 @@ class XMLDocumentBuilder(BaseDocumentBuilder):
         """
         return source.attrib
 
+    def init_blank_attributes(self, source_object):
+        """
+        lxml etree Element objects already has blank initiated attribute
+        children object
+
+        :param lxml._etree.Element source_object: source element
+        :return: None
+        :rtype: None
+        """
+
     @classmethod
     def iterate(cls, source):
         """
         iterate through source document
 
-        :param lxml.etree.Element source: xml document
+        :param source: xml document or
+            its attribute
+        :type source: lxml.etree.Element | lxml.etree._Attrib
         :rtype: generator
         :return: tuple[node name, node]
         """
-        # for node in source.getchildren():
-        #     yield (node.tag, node)
-
         if isinstance(source, etree._Element):
-            for node in source.getchildren():
+            for node in source.iterchildren():
                 yield (node.tag, node)
         else:
-            for name, item in source.items():
+            for name, item in source.iteritems():
                 yield (name, item)

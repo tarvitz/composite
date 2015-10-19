@@ -1,8 +1,11 @@
+import json
 from lxml import etree
 from unittest import TestCase
 from contextlib import closing
 
 from tests.documents import ValueList
+
+from composite.builders import LXMLDocumentBuilder, PythonDocumentBuilder
 
 
 class TestValueList(TestCase):
@@ -15,22 +18,24 @@ class TestValueList(TestCase):
 
     def test_from_xml(self):
         node = etree.XML(self.xml_file)
-        value_list = ValueList.build(node, 'xml')
+        value_list = ValueList.parse(LXMLDocumentBuilder, node)
         self.assertEqual(value_list.total, 55)
 
     def test_to_xml(self):
         source_node = etree.XML(self.xml_file)
-        source = ValueList.build(source_node, 'xml')
-        xml_node = source.to_xml()
-        value_list = ValueList.from_xml(xml_node)
+        source = ValueList.parse(LXMLDocumentBuilder, source_node)
+        xml_node = ValueList.build(LXMLDocumentBuilder, source)
+        value_list = ValueList.parse(LXMLDocumentBuilder, xml_node)
         self.assertEqual(value_list.total, 55)
 
     def test_from_json(self):
-        value_list = ValueList.from_json(self.json_file)
+        value_list = ValueList.parse(PythonDocumentBuilder,
+                                     json.loads(self.json_file))
         self.assertEqual(value_list.total, 55)
 
     def test_to_json(self):
-        source = ValueList.from_json(self.json_file)
-        json_raw = source.to_json()
-        value_list = ValueList.from_json(json_raw)
+        source = ValueList.parse(PythonDocumentBuilder,
+                                 json.loads(self.json_file))
+        json_raw = ValueList.build(PythonDocumentBuilder, source)
+        value_list = ValueList.parse(PythonDocumentBuilder, json_raw)
         self.assertEqual(value_list.total, 55)

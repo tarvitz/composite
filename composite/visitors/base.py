@@ -45,7 +45,7 @@ class FieldVisitor(object):
     - ``node``, block with several data in it:
 
         .. code-block:: xml
-            :emphasize-lines: 2-7
+            :emphasize-lines: 2-6
 
             <User>
                 <name>Alexander</name>

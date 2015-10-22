@@ -28,18 +28,18 @@ class PythonDocumentBuilder(BaseDocumentBuilder):
         assert (not isinstance(self.document, (dict, )))
         return super(PythonDocumentBuilder, self).build(node_name)
 
-    def get_source_object(self, node_name):
+    def build_object(self, node_name):
         return {}
 
-    def get_attributes_source(self, source):
+    def build_attributes(self, source_object):
         """
         attributes
 
-        :param dict source: source element
+        :param dict source_object: source element
         :rtype: dict
         :return: attributes
         """
-        return source.get('_attributes', {})
+        return source_object.get('_attributes', {})
 
     @classmethod
     def iterate(cls, source):

@@ -5,3 +5,4 @@
 /.tox
 /reports
 /.coverage
+/docs/_build

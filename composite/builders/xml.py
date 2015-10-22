@@ -27,7 +27,7 @@ class LXMLDocumentBuilder(BaseDocumentBuilder):
         assert (not isinstance(self.document, (etree._Element, etree._Attrib)))
         return super(LXMLDocumentBuilder, self).build(node_name)
 
-    def get_source_object(self, node_name):
+    def build_object(self, node_name):
         """
         returns blank lxml.etree.Element object
 
@@ -37,15 +37,15 @@ class LXMLDocumentBuilder(BaseDocumentBuilder):
         """
         return etree.Element(node_name)
 
-    def get_attributes_source(self, source):
+    def build_attributes(self, source_object):
         """
         attributes
 
-        :param lxml.etree.Element source: etree element
+        :param lxml.etree.Element source_object: etree element
         :rtype: dict
         :return: attributes
         """
-        return source.attrib
+        return source_object.attrib
 
     def init_blank_attributes(self, source_object):
         """

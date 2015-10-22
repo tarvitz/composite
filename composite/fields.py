@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-.. module:: fields
+.. module:: composite.fields
     :synopsis: Fields
 .. moduleauthor:: NickolasFox <tarvitz@blacklibrary.ru>
 .. sectionauthor:: NickolasFox <tarvitz@blacklibrary.ru>
 """
 
 
-class MetaField(object):
+class BaseField(object):
+    """
+    Base Field abstract class
+    """
     __slots__ = ['name', 'type', 'default']
 
     def __init__(self, name, type, default=None):
@@ -19,13 +22,13 @@ class MetaField(object):
         self.default = default
 
 
-class MetaListField(MetaField):
+class MetaListField(BaseField):
     """
     For list fields, list nodes, list etc usage
     """
 
 
-class Field(MetaField):
+class Field(BaseField):
     """
     Field processes simple types of data, for example: int, float, str:
 
@@ -35,6 +38,15 @@ class Field(MetaField):
         name = Field('name', str, '')
     """
     def visit(self, visitor, source):
+        """
+        invoke visitor's
+        :py:func:`composite.visitors.FieldVisitor.visit_field`
+        method call with given source.
+
+        :param any source: any source data
+        :rtype: None
+        :return: None
+        """
         visitor.visit_field(self, source)
 
 
@@ -48,10 +60,19 @@ class ListField(MetaListField):
         player_names = ListField('player_names', str)  # empty list, []
     """
     def visit(self, visitor, source):
+        """
+        invoke visitor's
+        :py:func:`composite.visitors.FieldVisitor.visit_list_field`
+        method call with given source.
+
+        :param any source: any source data
+        :rtype: None
+        :return: None
+        """
         visitor.visit_list_field(self, source)
 
 
-class AttributeField(MetaField):
+class AttributeField(BaseField):
     """
     Same as :py:class:`composite.fields.Field` but using only in attributes, as
     they include only simple data.
@@ -61,10 +82,19 @@ class AttributeField(MetaField):
         age = AttributeField('age', int)  # int() by default
     """
     def visit(self, visitor, source):
+        """
+        invoke visitor's
+        :py:func:`composite.visitors.FieldVisitor.visit_attribute_field`
+        method call with given source.
+
+        :param any source: base data types source data
+        :rtype: None
+        :return: None
+        """
         visitor.visit_attribute_field(self, source)
 
 
-class Node(MetaField):
+class Node(BaseField):
     """
     Node field serves to read different data types combined together (ADT).
 
@@ -84,6 +114,15 @@ class Node(MetaField):
             company = Node('company', Company)
     """
     def visit(self, visitor, source):
+        """
+        invoke visitor's
+        :py:func:`composite.visitors.FieldVisitor.visit_node`
+        method call with given source.
+
+        :param any source: any source of data
+        :rtype: None
+        :return: None
+        """
         return visitor.visit_node(self, source)
 
 
@@ -102,4 +141,13 @@ class ListNode(MetaListField):
             users = ListNode('users', User)
     """
     def visit(self, visitor, source):
+        """
+        invoke visitor's
+        :py:func:`composite.visitors.FieldVisitor.visit_list_node`
+        method call with given source.
+
+        :param any source: any source of data
+        :rtype: None
+        :return: None
+        """
         return visitor.visit_list_node(self, source)

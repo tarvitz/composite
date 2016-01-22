@@ -19,7 +19,7 @@ class TestAttributes(TestCase):
         attrs = {
             'x': Field('x', int),
             'y': Field('y', int),
-            'Attribute': type('Attribute', (), attribute_attrs)
+            'Attributes': type('Attributes', (), attribute_attrs)
         }
         return type('Vector', (Document, ), attrs)
 

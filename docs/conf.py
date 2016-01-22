@@ -123,7 +123,7 @@ html_theme = 'alabaster'
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-    'logo': 'no-logo.jpg',
+    'logo': 'no-logo.png',
     'github_user': 'tarvitz',
     'github_repo': 'composite',
     'github_banner': True,

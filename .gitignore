@@ -6,3 +6,5 @@
 /reports
 /.coverage
 /docs/_build
+/build
+/dist

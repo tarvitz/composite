@@ -31,7 +31,7 @@ class TestUsers(TestCase):
         self.assertEqual(user.sign, "Pepyako inc.")
         self.assertIn('_attributes', user.__dict__)
         attributes = user.attributes
-        self.assertIsInstance(attributes, user.Attribute)
+        self.assertIsInstance(attributes, user.Attributes)
         self.assertEqual(attributes.first_name, "Alexander")
         self.assertEqual(attributes.last_name, "Pepyako")
         self.assertEqual(attributes.age, 23)

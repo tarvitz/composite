@@ -11,6 +11,7 @@ from __future__ import unicode_literals
 import six
 from .exceptions import ImproperlyConfigured
 from .fields import BaseField, MetaListField, AttributeField
+from .const import ATTRIBUTES_META_CLASS
 
 
 class DocumentMeta(type):
@@ -21,7 +22,7 @@ class DocumentMeta(type):
         _fields = {}
         _fields_mapping = {}
 
-        attribute_class = attrs.pop('Attribute', None)
+        attribute_class = attrs.pop(ATTRIBUTES_META_CLASS, None)
         for field_name, item in attrs.items():
             if isinstance(item, BaseField):
                 _fields[field_name] = item
@@ -33,19 +34,20 @@ class DocumentMeta(type):
         new_class = super(DocumentMeta, cls).__new__(cls, name, bases, attrs)
         if attribute_class:
             attribute_composite_class = type(
-                str('Attribute'), (DocumentAttribute, ),
+                str(ATTRIBUTES_META_CLASS), (DocumentAttribute, ),
                 dict(attribute_class.__dict__)
             )
-            setattr(new_class, str('Attribute'), attribute_composite_class)
+            setattr(new_class, str(ATTRIBUTES_META_CLASS),
+                    attribute_composite_class)
         return new_class
 
     def __init__(cls, name, bases, attrs):
         #: reserved for attributes only
-        if cls.__name__ == 'Attribute':
+        if cls.__name__ == ATTRIBUTES_META_CLASS:
             _errors = []
             for field_name, field in attrs.items():
-                if (isinstance(field, BaseField)
-                        and not isinstance(field, AttributeField)):
+                if (isinstance(field, BaseField) and
+                        not isinstance(field, AttributeField)):
                     _errors.append({
                         'msg': (
                             "Field `%s` has type `%r`" % (field_name,

@@ -6,6 +6,7 @@
 .. moduleauthor:: Nickolas Fox <tarvitz@blacklibary.ru>
 .. sectionauthor:: Nickolas Fox <tarvitz@blacklibary.ru>
 """
+from ..const import ATTRIBUTES_META_CLASS
 
 
 class BaseDocumentBuilder(object):
@@ -108,7 +109,7 @@ class BaseDocumentBuilder(object):
         :rtype: composite.documents.DocumentAttribute
         :return: attribute class
         """
-        return getattr(self.document, 'Attribute', None)
+        return getattr(self.document, ATTRIBUTES_META_CLASS, None)
 
     def build_attributes(self, source_object):
         """

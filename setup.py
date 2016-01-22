@@ -12,14 +12,19 @@ version = ".".join([
 readme = os.path.join(os.path.dirname(__file__), 'README.rst')
 
 CLASSIFIERS = [
-    'Development Status :: 4 Beta',
+    'Development Status :: 4 - Beta',
     'Environment :: Console',
     'Intended Audience :: Developers',
     'License :: OSI Approved :: MIT License',
     'Operating System :: OS Independent',
     'Programming Language :: Python',
     'Natural Language :: English',
-    'Topic :: Utilities'
+    'Topic :: Utilities',
+    'Programming Language :: Python :: 2.7',
+    'Programming Language :: Python :: 3',
+    'Programming Language :: Python :: 3.3',
+    'Programming Language :: Python :: 3.4',
+    'Programming Language :: Python :: 3.5'
 ]
 
 install_requires = [
@@ -27,9 +32,6 @@ install_requires = [
     'lxml',
 ]
 
-extra_requires = {
-    'with_simplejson': ['simplejson>=3.6.0',]
-}
 
 if isinstance(py_version, tuple):
     if py_version < (2, 7):
@@ -37,7 +39,7 @@ if isinstance(py_version, tuple):
 
 
 setup(
-    name='composite',
+    name='python-composite',
     author='Nickolas Fox <tarvitz@blacklibrary.ru>',
     version=version,
     author_email='tarvitz@blacklibrary.ru',
@@ -49,7 +51,6 @@ setup(
     platforms=['OS Independent'],
     classifiers=CLASSIFIERS,
     install_requires=install_requires,
-    extra_requires=extra_requires,
     packages=find_packages(exclude=['tests', 'docs', 'documents']),
     test_suite='tests',
     include_package_data=True,

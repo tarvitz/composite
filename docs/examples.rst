@@ -31,7 +31,7 @@ XML to JSON
           def __str__(self):
               return '%s' % self.attributes.first_name
 
-          class Attribute:
+          class Attributes:
               first_name = fields.AttributeField(name='first_name', type=str)
               last_name = fields.AttributeField(name='last_name', type=str)
               age = fields.AttributeField(name='age', type=int)

@@ -17,7 +17,7 @@ class User(Document):
     def __str__(self):
         return '%s' % self.attributes.first_name
 
-    class Attribute:
+    class Attributes:
         first_name = AttributeField(name='first_name', type=str)
         last_name = AttributeField(name='last_name', type=str)
         age = AttributeField(name='age', type=int)

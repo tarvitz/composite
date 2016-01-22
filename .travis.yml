@@ -13,7 +13,7 @@ install:
   - "if [[ $TRAVIS_PYTHON_VERSION == '3.5' ]]; then pip install -r requirements.txt; pip install coveralls; fi"
   - pip install coveralls
 script:
-  - "coverage run --source=apps -m py.test"
+  - "coverage run --source=composite -m py.test"
 
 after_success:
   - coveralls

@@ -1,6 +1,12 @@
 Python composite
 ================
 
+.. image:: https://travis-ci.org/tarvitz/composite.svg?branch=master
+    :target: https://travis-ci.org/tarvitz/composite
+
+.. image:: https://badge.fury.io/py/python-composite.svg
+  :target: http://badge.fury.io/py/python-composite
+
 .. image:: https://readthedocs.org/projects/python-composite/badge/?version=latest
   :target: http://python-composite.readthedocs.org/en/latest/?badge=latest
   :alt: Documentation Status

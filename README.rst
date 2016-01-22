@@ -4,6 +4,10 @@ Python composite
 .. image:: https://travis-ci.org/tarvitz/composite.svg?branch=master
     :target: https://travis-ci.org/tarvitz/composite
 
+
+.. image:: https://coveralls.io/repos/github/tarvitz/composite/badge.svg?branch=master
+  :target: https://coveralls.io/github/tarvitz/composite?branch=master
+
 .. image:: https://badge.fury.io/py/python-composite.svg
   :target: http://badge.fury.io/py/python-composite
 

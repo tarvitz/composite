@@ -16,4 +16,4 @@ script:
   - "coverage run --source=apps -m py.test"
 
 after_success:
-  - COERALLS_REPO_TOKEN=LcHkYOvfnUo5Vicw7j8OroDSYjc9U75iV coveralls
+  - coveralls

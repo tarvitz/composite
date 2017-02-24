@@ -1,4 +1,4 @@
-__VERSION__ = (0, 0, 1, 'beta')
+__VERSION__ = (0, 1, 0, 'release')
 
 
 def get_version():  #: pragma: no cover

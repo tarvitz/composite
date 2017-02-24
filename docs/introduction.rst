@@ -1,6 +1,6 @@
 Introduction
 ============
-Composite project had began as a layer between XML (and xml like) documents and JSON in a
+Composite project began as a layer between XML (and xml like) documents and JSON in a
 *already in production* project to move obsolete xml schema towards JSON compatible.
 
 Though this didn't happen **composite** solved its issue designed for.

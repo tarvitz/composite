@@ -5,10 +5,10 @@ from setuptools import setup, find_packages
 import os
 import sys
 
+from composite.version import get_release
+
 py_version = sys.version_info
-version = ".".join([
-    str(i) for i in __import__('composite.version').__VERSION__
-])
+version = get_release()
 readme = os.path.join(os.path.dirname(__file__), 'README.rst')
 
 CLASSIFIERS = [
@@ -24,7 +24,8 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3',
     'Programming Language :: Python :: 3.3',
     'Programming Language :: Python :: 3.4',
-    'Programming Language :: Python :: 3.5'
+    'Programming Language :: Python :: 3.5',
+    'Programming Language :: Python :: 3.6'
 ]
 
 install_requires = [
@@ -45,7 +46,7 @@ setup(
     author_email='tarvitz@blacklibrary.ru',
     download_url='https://github.com/tarvitz/composite/archive/master.zip',
     description='Declarative work with nested documents '
-                '(JSON, XML, YAML, etc)',
+                '(JSON, XML, etc)',
     long_description=open(readme).read(),
     license='MIT license',
     platforms=['OS Independent'],

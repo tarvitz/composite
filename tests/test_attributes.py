@@ -31,3 +31,11 @@ class TestAttributes(TestCase):
         self.assertEqual(attrs.gender, 'male')
         self.assertEqual(attrs.email, 'user@example.com')
         self.assertEqual(attrs.phone, '79110001020')
+
+    def test_access_to__dict_(self):
+        user = User.parse(PythonDocumentBuilder, self.source)
+        attrs = user.get_attributes()
+        try:
+            getattr(attrs, '__dict__')
+        except TypeError as err:
+            self.fail("accessing __dict__ in attributes causes an error")
